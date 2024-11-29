@@ -27,6 +27,10 @@ app.use(express.urlencoded({
     extended: true
 }));
 
+app.use(cors());
+app.use(passport.initialize());
+app.use(passport.session());
+
 require('./config/passport')(passport);
 
 app.disable('x-powered-by');
@@ -46,18 +50,6 @@ productRoutes(app, upload);
 addressRoutes(app);
 ordersRoutes(app);
 
-app.use(cors());
-app.use(passport.initialize());
-app.use(passport.session());
-
-app.use(session({
-    secret: 'secret_key', // Clave secreta para firmar las sesiones
-    resave: false, // Evita guardar la sesión si no ha sido modificada
-    saveUninitialized: false, // No guarda sesiones no inicializadas
-    cookie: { secure: false } // Asegúrate de usar 'true' solo en HTTPS
-}));
-
-
 server.listen(port, function(){
     console.log('Aplicación de NodeJS ' + process.pid + ' Iniciada...')
 })
@@ -74,14 +66,6 @@ app.get('/test', (req, res) => {
 app.use((err, req, res, next) => {
     console.log(err);
     res.status(err.status || 500).send(err.stack);
-});
-
-app.get('/profile', (req, res) => {
-    if (req.isAuthenticated()) {
-      res.send('Bienvenido al perfil de usuario');
-    } else {
-      res.redirect('/login');
-    }
 });
 
 // 200 -ES UNA RESPUESTA EXITOSA
