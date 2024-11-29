@@ -26,9 +26,6 @@ app.use(express.json());
 app.use(express.urlencoded({
     extended: true
 }));
-app.use(cors());
-app.use(passport.initialize());
-app.use(passport.session());
 
 require('./config/passport')(passport);
 
@@ -49,9 +46,12 @@ productRoutes(app, upload);
 addressRoutes(app);
 ordersRoutes(app);
 
+app.use(cors());
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(session({
-    secret: 'L}pG46~Qw*4]srvTSk:Oh[@)]%ZBz;XC', // Clave secreta para firmar las sesiones
+    secret: 'secret_key', // Clave secreta para firmar las sesiones
     resave: false, // Evita guardar la sesión si no ha sido modificada
     saveUninitialized: false, // No guarda sesiones no inicializadas
     cookie: { secure: false } // Asegúrate de usar 'true' solo en HTTPS
@@ -83,10 +83,6 @@ app.get('/profile', (req, res) => {
       res.redirect('/login');
     }
 });
-
-
-app.use(passport.initialize());
-app.use(passport.session());
 
 // 200 -ES UNA RESPUESTA EXITOSA
 // 404 - SIGNIFICA QUE LA URL NO EXISTE

@@ -21,18 +21,4 @@ module.exports = (passport) => {
             }
         })
     }))
-
-    
-    passport.serializeUser((user, done) => {
-        done(null, user.id); // Guarda el id del usuario en la sesión
-      });
-      
-      passport.deserializeUser((id, done) => {
-        // Recupera la información del usuario desde la base de datos
-        User.findById(id, (err, user) => {
-          done(err, user);
-        });
-      });
-      
-
 }
