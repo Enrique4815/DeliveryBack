@@ -8,6 +8,7 @@ const logger = require('morgan');
 const cors = require('cors');
 const passport = require('passport');
 const multer = require('multer');
+const session = require('express-session');
 
 /*
 * IMPORTAR RUTAS
@@ -48,6 +49,15 @@ productRoutes(app, upload);
 addressRoutes(app);
 ordersRoutes(app);
 
+
+app.use(session({
+    secret: 'L}pG46~Qw*4]srvTSk:Oh[@)]%ZBz;XC', // Clave secreta para firmar las sesiones
+    resave: false, // Evita guardar la sesión si no ha sido modificada
+    saveUninitialized: false, // No guarda sesiones no inicializadas
+    cookie: { secure: false } // Asegúrate de usar 'true' solo en HTTPS
+}));
+
+
 server.listen(port, function(){
     console.log('Aplicación de NodeJS ' + process.pid + ' Iniciada...')
 })
@@ -65,6 +75,18 @@ app.use((err, req, res, next) => {
     console.log(err);
     res.status(err.status || 500).send(err.stack);
 });
+
+app.get('/profile', (req, res) => {
+    if (req.isAuthenticated()) {
+      res.send('Bienvenido al perfil de usuario');
+    } else {
+      res.redirect('/login');
+    }
+});
+
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // 200 -ES UNA RESPUESTA EXITOSA
 // 404 - SIGNIFICA QUE LA URL NO EXISTE
